@@ -8,15 +8,15 @@ class UserForm extends Form
 {
     public function buildForm()
     {
-        $id = $this->getData('id');
+				$id = $this->getData('id');
         $this
             ->add('name', 'text', [
-                'label' => 'Nome',
-                'rules' => 'required|max:255'
-            ])
-            ->add('email', 'email',[
-                'label' => 'E-mail',
-                'rules' => "required|max:255|unique:users,email,{$id}"
-            ]);
+							'label' => 'Nome',
+							'rules' => 'required|max:255'
+						])
+            ->add('email', 'email', [
+							'label' => 'Email',
+							'rules' => "required|max:255|unique:users,email,{$id}"
+						]);
     }
 }

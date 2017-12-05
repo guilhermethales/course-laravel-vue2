@@ -9,6 +9,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable implements TableInterface
 {
     use Notifiable;
+		const ROLE_ADMIN = 1;
+		const ROLE_TEACHER = 2;
+		const ROLE_STUDENT = 3;
 
     /**
      * The attributes that are mass assignable.
@@ -19,6 +22,7 @@ class User extends Authenticatable implements TableInterface
         'name',
         'email',
         'password',
+				'enrolment'
     ];
 
     /**
@@ -30,6 +34,29 @@ class User extends Authenticatable implements TableInterface
         'password',
         'remember_token',
     ];
+
+		public static function createFully($data) {
+				$password = str_random(6);
+				$data['password'] = $password;
+
+				$user = parent::create($data+['enrolment' => str_random(6)]);
+				self::assignEnrolment($user, self::ROLE_ADMIN);
+				$user->save();
+
+				return $user;
+		}
+
+		public static function assignEnrolment(User $user, $type) {
+			$types = [
+				self::ROLE_ADMIN => 100000,
+				self::ROLE_TEACHER => 400000,
+				self::ROLE_STUDENT => 700000,
+			];
+
+			$user->enrolment = $types[$type] + $user->id;
+
+			return $user->enrolment;
+		}
 
     /**
      * A list of headers to be used when a table is displayed
