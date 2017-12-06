@@ -44,9 +44,9 @@ class LoginController extends Controller
 			$data = $request->only($this->username(), 'password');
 			$usernameKey = $this->usernameKey();
 			$data[$usernameKey] = $data[$this->username()];
-			// $data['userable_type'] = Admin::class;
+			$data['userable_type'] = Admin::class;
 			unset($data[$this->username()]);
-			return $data; 
+			return $data;
     }
 
 		protected function usernameKey() {
