@@ -17,6 +17,11 @@ class UserForm extends Form
             ->add('email', 'email', [
 							'label' => 'Email',
 							'rules' => "required|max:255|unique:users,email,{$id}"
+						])
+						->add('send_mail', 'checkbox', [
+							'label' => 'Enviar e-mail de Boas Vindas',
+							'value' => true,
+							'checked' => false
 						]);
     }
 }
