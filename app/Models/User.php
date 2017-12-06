@@ -5,6 +5,7 @@ namespace SON\Models;
 use Bootstrapper\Interfaces\TableInterface;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use SON\Notifications\UserCreated;
 
 class User extends Authenticatable implements TableInterface
 {
@@ -35,15 +36,23 @@ class User extends Authenticatable implements TableInterface
         'remember_token',
     ];
 
+		public function userable() {
+			return $this->morphTo();
+		}
+
 		public static function createFully($data) {
 				$password = str_random(6);
 				$data['password'] = $password;
 
 				$user = parent::create($data+['enrolment' => str_random(6)]);
 				self::assignEnrolment($user, self::ROLE_ADMIN);
+				self::assignRole($user, $data['type']);
 				$user->save();
-
-				return $user;
+				if(isset($data['send_mail'])) {
+					$token = \Password::broker()->createToken($user);
+					$user->notify(new UserCreated($token));
+				} 
+				return compact('user', 'password');
 		}
 
 		public static function assignEnrolment(User $user, $type) {
@@ -57,6 +66,18 @@ class User extends Authenticatable implements TableInterface
 
 			return $user->enrolment;
 		}
+
+		public static function assignRole(User $user, $type) {
+            $types = [
+                self::ROLE_ADMIN => Admin::class,
+                self::ROLE_TEACHER => Teacher::class,
+                self::ROLE_STUDENT => Student::class
+            ];
+
+            $model = $types[$type];
+            $model = $model::create([]);
+            $user->userable()->associate($model);
+        }
 
     /**
      * A list of headers to be used when a table is displayed
