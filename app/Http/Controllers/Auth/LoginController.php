@@ -5,6 +5,7 @@ namespace SON\Http\Controllers\Auth;
 use SON\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use SON\Models\Admin;
 
 class LoginController extends Controller
 {
@@ -43,6 +44,7 @@ class LoginController extends Controller
 			$data = $request->only($this->username(), 'password');
 			$usernameKey = $this->usernameKey();
 			$data[$usernameKey] = $data[$this->username()];
+			// $data['userable_type'] = Admin::class;
 			unset($data[$this->username()]);
 			return $data; 
     }

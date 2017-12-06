@@ -17,7 +17,7 @@ class UsersTableSeeder extends Seeder
 						'enrolment' => 100000
         ])->each(function(\SON\Models\User $user) {
 
-            User::assignRole($user, User::ROLE_ADMIN);
+            User::assignRole($user, User::ROLE_TEACHER);
             $user->save();
         });
 
