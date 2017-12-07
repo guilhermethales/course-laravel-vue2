@@ -13,6 +13,10 @@ class ClassInformation extends Model implements TableInterface
 
     protected $dates = ['date_start', 'date_end'];
 
+    public function students() {
+        return $this->belongsToMany(Student::class);
+    }
+
     public function getTableHeaders() {
         return [
             'ID',
